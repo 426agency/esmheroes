@@ -12,7 +12,7 @@ import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 public class Bugzilla {
 public static void main(String[] args) throws MalformedURLException, XmlRpcException {
  XmlRpcClientConfigImpl  config = new XmlRpcClientConfigImpl();
- config.setServerURL(new URL("https://bugzilla.mozilla.org/xmlrpc.cgi"));
+ config.setServerURL(new URL("https://bugs.kde.org/xmlrpc.cgi"));
 
  XmlRpcClient client = new XmlRpcClient();
  client.setConfig(config);
