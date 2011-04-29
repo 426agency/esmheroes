@@ -11,9 +11,7 @@
  */
 package it.unibz.connectors;
 
-import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,30 +30,8 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-/*
- * This example shows how to get the repository tree at the latest (HEAD)
- * revision starting with the directory that is the path/to/repository part of
- * the repository location URL. The main point is SVNRepository.getDir() method
- * that is called recursively for each directory (till the end of the tree).
- * getDir collects all entries located inside a directory and returns them as a
- * java.util.Collection. As an example here's one of the program layouts (for
- * the default url used in the program ):
- * 
- * Repository Root: http://svn.svnkit.com/repos/svnkit
- * Repository UUID: 0a862816-5deb-0310-9199-c792c6ae6c6e
- * 
- * /examples (author: 'sa'; revision: 2794; date: Tue Nov 14 03:21:11 NOVT 2006)
- * /examples/svnkit-examples.iml (author: 'alex'; revision: 2775; date: Fri Nov 10 02:08:45 NOVT 2006)
- * /examples/src (author: 'sa'; revision: 2794; date: Tue Nov 14 03:21:11 NOVT 2006)
- * /examples/src/org (author: 'sa'; revision: 2794; date: Tue Nov 14 03:21:11 NOVT 2006)
- * /examples/src/org/tmatesoft (author: 'sa'; revision: 2794; date: Tue Nov 14 03:21:11 NOVT 2006)
- * /examples/src/org/tmatesoft/svn (author: 'sa'; revision: 2794; date: Tue Nov 14 03:21:11 NOVT 2006)
- * /examples/src/org/tmatesoft/svn/examples (author: 'sa'; revision: 2794; date: Tue Nov 14 03:21:11 NOVT 2006)
- * /examples/src/org/tmatesoft/svn/examples/wc (author: 'alex'; revision: 2776; date: Fri Nov 10 02:25:08 NOVT 2006)
- * ......................................................
- * ---------------------------------------------
- * Repository latest revision: 2802
- */
+
+
 public class DisplayRepositoryTree {
 	
 	public static void getTotalContribution(){
@@ -71,7 +47,7 @@ public class DisplayRepositoryTree {
         /*
          * default values:
          */
-        String url = "svn://anonsvn.kde.org/home/kde/trunk/KDE/";
+        String url = "svn://anonsvn.kde.org/home/kde/trunk/KDE/kdegames/katomic/";
         String name = "anonymous";
         String password = "anonymous";
 
