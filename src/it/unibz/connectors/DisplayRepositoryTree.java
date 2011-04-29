@@ -20,6 +20,7 @@ import java.util.Set;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
+import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -113,23 +114,43 @@ public class DisplayRepositoryTree {
         long startRevision = 0;
         long endRevision = -1; //HEAD (the latest) revision     
         try {
-			logEntries = repository.log( new String[] { "" } , null , startRevision , endRevision , false , false );
+			logEntries = repository.log( new String[] { "" } , null , startRevision , endRevision , true , true );
 		} catch (SVNException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Map authors = new HashMap<String, Integer>();
+		Map fileitems = new HashMap<String,FileItem>();
+		
 		for ( Iterator entries = logEntries.iterator( ); entries.hasNext( ); ) {
 			   SVNLogEntry logEntry = ( SVNLogEntry ) entries.next( );
-			   authors.put(logEntry.getAuthor(),1+(authors.containsKey(logEntry.getAuthor())?((Integer)authors.get(logEntry.getAuthor())):0));
+			   Set changedPathsSet = logEntry.getChangedPaths( ).keySet( );
+			   for ( Iterator changedPaths = changedPathsSet.iterator( ); changedPaths.hasNext( ); ) {
+			      SVNLogEntryPath entryPath = ( SVNLogEntryPath ) logEntry.getChangedPaths( ).get( changedPaths.next( ) );
+			      if(fileitems.containsKey(entryPath.getPath())){
+			      	FileItem cu = ((FileItem)fileitems.get(entryPath.getPath()));
+			      	cu.incNumbermodified();
+			      	//If author not same as fileauthor remove hero status
+			      	if(!logEntry.getAuthor().equalsIgnoreCase(cu.getAuthor()))
+			      		authors.put(cu.getAuthor(),1+(authors.containsKey(cu.getAuthor())?((Integer)authors.get(cu.getAuthor())):0));			      
+			      }
+			      else{
+			      FileItem cu = new FileItem(entryPath.getPath(), logEntry.getAuthor());
+			      fileitems.put(entryPath.getPath( ),cu);
+			      authors.put(logEntry.getAuthor(),1);
+			      }
     
 		}
+		}
+		
+		//Now print only heroes
 		Set keys = authors.keySet();         // The set of keys in the map.
 	      Iterator keyIter = keys.iterator();
 	      System.out.println("The map contains the following associations:");
 	      while (keyIter.hasNext()) {
 	         Object key = keyIter.next();  // Get the next key.
 	         Object value = authors.get(key);  // Get the value for that key.
+	         if(((Integer)value)==1)
 	         System.out.println( "   (" + key + "," + value + ")" );
 	      }
 		}
