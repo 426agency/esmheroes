@@ -11,11 +11,17 @@
  */
 package it.unibz.connectors;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -51,6 +57,12 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
  * Repository latest revision: 2802
  */
 public class DisplayRepositoryTree {
+	
+	public static void getTotalContribution(){
+		//svn ls -R | egrep -v -e "\/$" | xargs svn blame | awk '{print $2}' | sort | uniq -c | sort -r
+		
+	}
+	
     /*
      * args parameter is used to obtain a repository location URL, user's
      * account name & password to authenticate him to the server.
@@ -121,62 +133,30 @@ public class DisplayRepositoryTree {
         ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(name, password);
         repository.setAuthenticationManager(authManager);
 
+        Collection logEntries = null;
+        long startRevision = 0;
+        long endRevision = -1; //HEAD (the latest) revision     
         try {
-            /*
-             * Checks up if the specified path/to/repository part of the URL
-             * really corresponds to a directory. If doesn't the program exits.
-             * SVNNodeKind is that one who says what is located at a path in a
-             * revision. -1 means the latest revision.
-             */
-            SVNNodeKind nodeKind = repository.checkPath("", -1);
-            if (nodeKind == SVNNodeKind.NONE) {
-                System.err.println("There is no entry at '" + url + "'.");
-                System.exit(1);
-            } else if (nodeKind == SVNNodeKind.FILE) {
-                System.err.println("The entry at '" + url + "' is a file while a directory was expected.");
-                System.exit(1);
-            }
-            /*
-             * getRepositoryRoot() returns the actual root directory where the
-             * repository was created. 'true' forces to connect to the repository 
-             * if the root url is not cached yet. 
-             */
-            System.out.println("Repository Root: " + repository.getRepositoryRoot(true));
-            /*
-             * getRepositoryUUID() returns Universal Unique IDentifier (UUID) of the 
-             * repository. 'true' forces to connect to the repository 
-             * if the UUID is not cached yet.
-             */
-            System.out.println("Repository UUID: " + repository.getRepositoryUUID(true));
-            System.out.println("");
-
-            /*
-             * Displays the repository tree at the current path - "" (what means
-             * the path/to/repository directory)
-             */
-            listEntries(repository, "");
-        } catch (SVNException svne) {
-            System.err.println("error while listing entries: "
-                    + svne.getMessage());
-            System.exit(1);
-        }
-        /*
-         * Gets the latest revision number of the repository
-         */
-        long latestRevision = -1;
-        try {
-            latestRevision = repository.getLatestRevision();
-        } catch (SVNException svne) {
-            System.err
-                    .println("error while fetching the latest repository revision: "
-                            + svne.getMessage());
-            System.exit(1);
-        }
-        System.out.println("");
-        System.out.println("---------------------------------------------");
-        System.out.println("Repository latest revision: " + latestRevision);
-        System.exit(0);
-    }
+			logEntries = repository.log( new String[] { "" } , null , startRevision , endRevision , false , false );
+		} catch (SVNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Map authors = new HashMap<String, Integer>();
+		for ( Iterator entries = logEntries.iterator( ); entries.hasNext( ); ) {
+			   SVNLogEntry logEntry = ( SVNLogEntry ) entries.next( );
+			   authors.put(logEntry.getAuthor(),1+(authors.containsKey(logEntry.getAuthor())?((Integer)authors.get(logEntry.getAuthor())):0));
+    
+		}
+		Set keys = authors.keySet();         // The set of keys in the map.
+	      Iterator keyIter = keys.iterator();
+	      System.out.println("The map contains the following associations:");
+	      while (keyIter.hasNext()) {
+	         Object key = keyIter.next();  // Get the next key.
+	         Object value = authors.get(key);  // Get the value for that key.
+	         System.out.println( "   (" + key + "," + value + ")" );
+	      }
+		}
 
     /*
      * Initializes the library to work with a repository via 
