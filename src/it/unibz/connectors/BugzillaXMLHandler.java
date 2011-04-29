@@ -105,9 +105,9 @@ final class BugzillaXMLHandler extends HandlerBase {
     private Issue.Description longDesc;
 
     /** date format converter */
-    private SimpleDateFormat dateFormat;
+    private static SimpleDateFormat dateFormat;
     /** date format converter for second format of time */
-    private SimpleDateFormat dateFormat2;
+    private static SimpleDateFormat dateFormat2;
     
     
     static {
@@ -299,7 +299,7 @@ final class BugzillaXMLHandler extends HandlerBase {
     
     /** Converts a string to date
      */
-    public java.util.Date toDate (String date) {
+    public static java.util.Date toDate (String date) {
         if (dateFormat == null) {
             dateFormat = new SimpleDateFormat ("yyyy-mm-dd hh:mm:ss");
         }

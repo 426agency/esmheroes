@@ -59,7 +59,8 @@ public final class Bugzilla2 extends java.lang.Object {
     private java.net.URL urlBase;
     /** sax parser to use */
     private SAXParser saxParser;
-
+    private static long totalDelayNonHeroes=0;
+    private static long totalDelayHeroes=0;
     /** maximum IO failures during connection to IZ */
     private int maxIOFailures = 15;
     
@@ -120,20 +121,6 @@ public final class Bugzilla2 extends java.lang.Object {
         }
     }
     
-    /** Getter of an issue for given number.
-     * @param number number of the issue
-     * @return the issue 
-     * @exception IOException if connection fails
-     * @exception SAXException if parsing fails
-     */
-    public Issue getBug (int number) throws SAXException, IOException {
-        Issue[] arr = getBugs (new int[] { number });        
-        if (arr.length != 1) {
-            throw new java.io.InvalidObjectException ("Issue not read");
-        }
-        
-        return arr[0];
-    }
     
     /** Getter of more issues at once.
      * @param numbers array of integers with numbers of bugs to retrieve
@@ -141,7 +128,7 @@ public final class Bugzilla2 extends java.lang.Object {
      * @exception IOException if connection fails
      * @exception SAXException if parsing fails
      */
-    public Issue[] getBugs (int[] numbers) throws SAXException, IOException {
+    public Issue[] getBugs (int[] numbers,List<String> heroes) throws SAXException, IOException {
         int maxIssuesAtOnce = 10;
         
         Issue[] result = new Issue[numbers.length];
@@ -166,7 +153,7 @@ public final class Bugzilla2 extends java.lang.Object {
                     
                     Issue[] arr;
                     try {
-                        arr = getBugs(is, urlBase);
+                        arr = getBugs(is, urlBase,heroes);
                     } finally {
                         is.close();
                     }
@@ -276,20 +263,20 @@ public final class Bugzilla2 extends java.lang.Object {
      * @return Issue[] objects from the InputStream containing
      * their XML representation.
      */
-    private Issue[] getBugs(InputStream in, URL source)
+    private Issue[] getBugs(InputStream in, URL source, List<String> heroes)
     throws SAXException, IOException  {
         BugzillaXMLHandler handler = new BugzillaXMLHandler();
         InputSource input = new InputSource(in);
         input.setSystemId(source.toExternalForm());
         saxParser.parse(input, handler);
-        return getBugsFromHandler(handler);
+        return getBugsFromHandler(handler,heroes);
     }
     
     /**
      * Gets the bugs form the handler. This must be called once the handler
      * finished its work.
      */
-    private Issue[] getBugsFromHandler(BugzillaXMLHandler handler) {
+    private Issue[] getBugsFromHandler(BugzillaXMLHandler handler, List<String> heroes) {
         List bugList = handler.getBugList();
         if (bugList == null) {
             return null;
@@ -303,42 +290,23 @@ public final class Bugzilla2 extends java.lang.Object {
                 Map.Entry entry = (Map.Entry) it.next(); 
                 bug.setAttribute((String) entry.getKey(), entry.getValue());
             }
+            //Set here both time delays
+            if(heroes.contains(bug.getAttribute(Issue.ASSIGNED_TO)))
+            	totalDelayHeroes+=bug.getDuration();
+            else
+            	totalDelayNonHeroes+=bug.getDuration();
+				
             bugs[i] = bug;
         }
         return bugs;
     }
-/*    
-    public static void main (String[] args) throws Exception {
-        Bugzilla iz = new Bugzilla (new URL ("http://www.netbeans.org/issues/"));
-        
-        
-        //Issue[] arr = new Issue[] { iz.getBug (16000) };
-        Issue[] arr = iz.getBugs (new int[] { 10001, 10000 });
-        System.out.println("arr: " + arr.length);
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println(i + " = " + arr[i]);
-        }
-    }
-*/
 
     public static void main (String[] args) throws Exception {
         Bugzilla2 iz = new Bugzilla2 (new URL ("https://bugs.kde.org/"));
         
-        long ret=0;
         int[] res = iz.query ("query_format=advanced&short_desc_type=allwordssubstr&short_desc=&long_desc_type=substring&long_desc=&bug_file_loc_type=allwordssubstr&bug_file_loc=&keywords_type=allwords&keywords=&bug_status=VERIFIED&bug_status=CLOSED&resolution=FIXED&bug_severity=critical&op_sys=Linux&emailtype1=substring&email1=&emailtype2=substring&email2=&bugidtype=include&bug_id=&votes=&chfieldfrom=&chfieldto=Now&chfieldvalue=&cmdtype=doit&order=Bug+Number&field0-0-0=noop&type0-0-0=noop&value0-0-0=");
-        Issue[] issues = iz.getBugs(res);
-        List<Issue> l = Arrays.asList(issues);
-    		//Now we have our list of bugs, lets sum delaytimes = completation time
-    		int s =l.size();
-    		boolean exclusive =false;
-    		List<String> heroes = new ArrayList<String>();
-    		Issue current=null;
-    		for(int i=0;i<s;i++){
-    			current = l.get(i);
-    			if(exclusive&&heroes.contains(current.getAttribute(Issue.ASSIGNED_TO))||
-    					(!exclusive&&!heroes.contains(current.getAttribute(Issue.ASSIGNED_TO))))
-    				ret+=((Date)current.getAttribute("delta_ts")).getTime()-current.getCreated().getTime();
-    		}
+        Issue[] issues = iz.getBugs(res,new ArrayList<String>());
+       
 //    		String res= String.format("%d hours, %d min, %d sec", 
 //    				TimeUnit.MILLISECONDS.toHours(delay),
 //    				TimeUnit.MILLISECONDS.toMinutes(delay)-
@@ -347,7 +315,7 @@ public final class Bugzilla2 extends java.lang.Object {
 //    				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(delay))
 //    		);
 
-        System.out.println(ret);
+        System.out.println("Total time heroes: "+totalDelayHeroes+" non Heroes: "+totalDelayNonHeroes);
     }
 /**/
     

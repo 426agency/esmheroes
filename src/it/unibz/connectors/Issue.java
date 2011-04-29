@@ -74,9 +74,10 @@ public final class Issue extends Object implements Comparable {
 //    static final String DEPENDS_ON = "dependson";
 //    static final String BLOCKS = "blocks";
     static final String CREATED = "creation_ts";
+    static final String LAST_MODIFIED = "delta_ts";
 //    static final String VOTES = "votes";
 //    static final String KEYWORDS = "keywords";
-    
+    static long duration = 0;
     /** The target milestone attribute name. */
     static final String TARGET_MILESTONE = "target_milestone";
 
@@ -164,6 +165,14 @@ public final class Issue extends Object implements Comparable {
      */
     public Date getCreated () {
         Date d = (Date)getAttribute (CREATED);
+        return d == null ? new Date (0) : d;
+    }
+    
+    /** A time when this issue has been last modified.
+     * @return the date or begining of epoch if wrongly defined
+     */
+    public Date getLastModified () {
+        Date d = BugzillaXMLHandler.toDate((String)getAttribute (LAST_MODIFIED));
         return d == null ? new Date (0) : d;
     }
     
@@ -306,7 +315,10 @@ public final class Issue extends Object implements Comparable {
 
     /** Setter of values, package private. */
     void setAttribute(String name, Object value) {
-        attributes.put(name, value);
+    	attributes.put(name, value);
+    	if(name.equalsIgnoreCase(LAST_MODIFIED)){
+    		duration=getLastModified().getTime()-getCreated().getTime();
+    	}
     }
 
     /**
@@ -476,5 +488,12 @@ public final class Issue extends Object implements Comparable {
         }
 
     }
+
+
+
+	public long getDuration() {
+		// TODO Auto-generated method stub
+		return duration;
+	}
     
 }
