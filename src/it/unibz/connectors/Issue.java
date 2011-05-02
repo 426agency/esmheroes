@@ -1,57 +1,12 @@
 package it.unibz.connectors;
 
-/*
- *                 Sun Public License Notice
- * 
- * The contents of this file are subject to the Sun Public License
- * Version 1.0 (the "License"). You may not use this file except in
- * compliance with the License. A copy of the License is available at
- * http://www.sun.com/
- * 
- * The Original Code is NetBeans. The Initial Developer of the Original
- * Code is Sun Microsystems, Inc. Portions Copyright 1997-2000 Sun
- * Microsystems, Inc. All Rights Reserved.
- */
 
 
-import java.io.*;
-import java.net.URL;
 import java.util.*;
 import java.util.Date;
 
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
-
 
 /** Represents on issue in issuezilla.
- * Created by {@link Issuezilla#getBug}
- *
- *
- * tor@netbeans.org:
- * This class is virtually identical to
- *  nbbuild/antsrc/org/netbeans/nbbuild/Issue.java
- * At first, I inclouded its class file directly as part of
- * the build. However, treating Issuezilla as a black box
- * didn't work well because when connections fail (and are
- * retried), or even during a query, there is no feedback - and
- * since issuezilla is so slow, it's hard to know in the GUI
- * that things are working. Therefore, I've modified the java
- * file to give us a little bit more feedback.
- * In CVS I stored the original file as the first revision,
- * so you can easily diff to see what has changed - and generate
- * a patch which you can then apply to an updated version
- * of nbbuild/antsrc/ to keep the two in sync.
- *
- * serff@netbeans.org:
- * This class is almost exactally the same as issuezilla.Issue, but modified to 
- * work with bugzilla. I didn't want to call this class Bug because of the 
- * higher level Bug class.  If you can think of a better name, please let me know
- *
- * @todo think of a better name.
- *
- * @author Ivan Bradac, refactored by Jaroslav Tulach
  */
 public final class Issue extends Object implements Comparable {
     //static final String ENHANCEMENT = "ENHANCEMENT";
@@ -449,16 +404,6 @@ public final class Issue extends Object implements Comparable {
             buffer.append("\n\n");
             return buffer.toString();
         }
-
-
-
-
-
-
-
-
-
-
 
         /** Setter for property thetext.
          * @param thetext New value of property thetext.

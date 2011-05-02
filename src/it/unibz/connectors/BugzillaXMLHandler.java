@@ -1,50 +1,15 @@
 package it.unibz.connectors;
 
-/*
- *                 Sun Public License Notice
- * 
- * The contents of this file are subject to the Sun Public License
- * Version 1.0 (the "License"). You may not use this file except in
- * compliance with the License. A copy of the License is available at
- * http://www.sun.com/
- * 
- * The Original Code is NetBeans. The Initial Developer of the Original
- * Code is Sun Microsystems, Inc. Portions Copyright 1997-2000 Sun
- * Microsystems, Inc. All Rights Reserved.
- */
 
 import org.xml.sax.*;
 
 import java.util.*;
 
-import java.io.*;
 import java.text.SimpleDateFormat;
 
 /**
  * The handler for parsing files containing XML representations of Issuezilla
  * bugs.
- *
- * tor@netbeans.org:
- * This class is virtually identical to
- *  nbbuild/antsrc/org/netbeans/nbbuild/IssuezillaXMLHandler.java
- * At first, I inclouded its class file directly as part of
- * the build. However, treating Issuezilla as a black box
- * didn't work well because when connections fail (and are
- * retried), or even during a query, there is no feedback - and
- * since issuezilla is so slow, it's hard to know in the GUI
- * that things are working. Therefore, I've modified the java
- * file to give us a little bit more feedback.
- * In CVS I stored the original file as the first revision,
- * so you can easily diff to see what has changed - and generate
- * a patch which you can then apply to an updated version
- * of nbbuild/antsrc/ to keep the two in sync.
- *
- * serff@netbeans.org:
- * This class is almost exactally the same as IzzuezillaXMLHandler but modified
- * to work with Bugzilla.  I basically just changed the column/field names.
- *
- * @author ibradac
- * @version 1.0
  */
 final class BugzillaXMLHandler extends HandlerBase {
     
