@@ -1,9 +1,10 @@
-package it.unibz.connectors;
+package it.unibz.types;
 
 
+
+import it.unibz.connectors.BugzillaXMLHandler;
 
 import java.util.*;
-import java.util.Date;
 
 
 /** Represents on issue in issuezilla.
@@ -24,25 +25,29 @@ public final class Issue extends Object implements Comparable {
     static final String REP_PLATFORM = "rep_platform";
     static final String OP_SYS = "op_sys"; 
     static final String PRIORITY = "priority";
-    static final String ASSIGNED_TO = "assigned_to";
+    public static final String ASSIGNED_TO = "assigned_to";
 //    static final String CC = "cc";
 //    static final String DEPENDS_ON = "dependson";
 //    static final String BLOCKS = "blocks";
-    static final String CREATED = "creation_ts";
+    public static final String CREATED = "creation_ts";
     static final String LAST_MODIFIED = "delta_ts";
 //    static final String VOTES = "votes";
 //    static final String KEYWORDS = "keywords";
-    static long duration = 0;
     /** The target milestone attribute name. */
     static final String TARGET_MILESTONE = "target_milestone";
 
     /** Name of the attribute containing the long_desc as a list */
-    static final String LONG_DESC_LIST = "long_desc_list";
+    public static final String LONG_DESC_LIST = "long_desc_list";
 
     private HashMap attributes = new HashMap (49);
+	private boolean fixedByHero=false;
 
 
-    /**
+    public boolean isFixedByHero() {
+		return fixedByHero;
+	}
+
+	/**
      * Gets the id as an Integer.
      *
      * @return the issue_id as 
@@ -259,7 +264,7 @@ public final class Issue extends Object implements Comparable {
     /** Package private getter, it is expected to add getter for useful
      * issues.
      */
-    Object getAttribute(String name) {
+    public Object getAttribute(String name) {
         if (name.equals(LONG_DESC)) {
             return formatLongDescriptions();
         } else {
@@ -269,11 +274,9 @@ public final class Issue extends Object implements Comparable {
 
 
     /** Setter of values, package private. */
-    void setAttribute(String name, Object value) {
+    public void setAttribute(String name, Object value) {
     	attributes.put(name, value);
-    	if(name.equalsIgnoreCase(LAST_MODIFIED)){
-    		duration=getLastModified().getTime()-getCreated().getTime();
-    	}
+    	
     }
 
     /**
@@ -342,10 +345,10 @@ public final class Issue extends Object implements Comparable {
      * Long description of Issues.
      */
     public final static class Description {
-        static final String WHO = "who";
+        public static final String WHO = "who";
         static final String ISSUE_WHEN = "bug_when";
         static final String BODY = "thetext";
-        static final String THETEXT = "thetext";
+        public static final String THETEXT = "thetext";
 
         /** Holds value of property who. */
         private String who;
@@ -380,7 +383,7 @@ public final class Issue extends Object implements Comparable {
         /** Setter for property issue_when.
          * @param issue_when New value of property issue_when.
          */
-        void setIssueWhen(Date when) {
+        public void setIssueWhen(Date when) {
             this.when = when;
         }
 
@@ -412,7 +415,7 @@ public final class Issue extends Object implements Comparable {
             this.body = body;
         }
 
-        void setAtribute(String name, String value) {
+        public void setAtribute(String name, String value) {
             if (name.equalsIgnoreCase(WHO)) {
                 setWho(value);
             } else if (name.equalsIgnoreCase(BODY) 
@@ -437,8 +440,14 @@ public final class Issue extends Object implements Comparable {
 
 
 	public long getDuration() {
-		// TODO Auto-generated method stub
-		return duration;
+		
+		    		
+    	
+		return getLastModified().getTime()-getCreated().getTime();
+	}
+
+	public void setFixedByHero() {
+this.fixedByHero=true;		
 	}
     
 }

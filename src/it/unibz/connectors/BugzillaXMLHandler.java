@@ -3,6 +3,8 @@ package it.unibz.connectors;
 
 import org.xml.sax.*;
 
+import it.unibz.types.Issue;
+
 import java.util.*;
 
 import java.text.SimpleDateFormat;
@@ -11,7 +13,7 @@ import java.text.SimpleDateFormat;
  * The handler for parsing files containing XML representations of Issuezilla
  * bugs.
  */
-final class BugzillaXMLHandler extends HandlerBase {
+public final class BugzillaXMLHandler extends HandlerBase {
     
     /** The DTD version this parser is capable to work with. */
     private static final String DTD_VERSION = "$Revision: 1.1 $";

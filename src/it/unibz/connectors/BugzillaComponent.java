@@ -1,6 +1,9 @@
 package it.unibz.connectors;
 
 
+import it.unibz.types.Developer;
+import it.unibz.types.Issue;
+
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -31,7 +34,7 @@ public final class BugzillaComponent extends java.lang.Object {
      * @exception IOException if connection fails
      * @exception SAXException if parsing fails
      */
-    public static Issue[] getBugs (int[] numbers,Set<String> keys) throws SAXException, IOException {
+    public static Issue[] getBugs (int[] numbers,List<Developer> heros) throws SAXException, IOException {
         int maxIssuesAtOnce = 10;
         urlBase= new URL("https://bugs.kde.org");
         try {
@@ -65,7 +68,7 @@ public final class BugzillaComponent extends java.lang.Object {
                     
                     Issue[] arr;
                     try {
-                        arr = getBugs(is, urlBase,keys);
+                        arr = getBugs(is, urlBase,heros);
                     } finally {
                         is.close();
                     }
@@ -158,20 +161,20 @@ public final class BugzillaComponent extends java.lang.Object {
      * @return Issue[] objects from the InputStream containing
      * their XML representation.
      */
-    private static Issue[] getBugs(InputStream in, URL source, Set keys)
+    private static Issue[] getBugs(InputStream in, URL source, List<Developer> heros)
     throws SAXException, IOException  {
         BugzillaXMLHandler handler = new BugzillaXMLHandler();
         InputSource input = new InputSource(in);
         input.setSystemId(source.toExternalForm());
         saxParser.parse(input, handler);
-        return getBugsFromHandler(handler,keys);
+        return getBugsFromHandler(handler,heros);
     }
     
     /**
      * Gets the bugs form the handler. This must be called once the handler
      * finished its work.
      */
-    private static Issue[] getBugsFromHandler(BugzillaXMLHandler handler, Set keys) {
+    private static Issue[] getBugsFromHandler(BugzillaXMLHandler handler, List<Developer> heros) {
         List bugList = handler.getBugList();
         if (bugList == null) {
             return null;
@@ -186,13 +189,11 @@ public final class BugzillaComponent extends java.lang.Object {
                 bug.setAttribute((String) entry.getKey(), entry.getValue());
             }
             //Set here both time delays
-            Iterator<String> keyIter = keys.iterator();
+            Iterator<Developer> keyIter = heros.iterator();
     	      while (keyIter.hasNext()) {
-    	         String key = keyIter.next();  // Get the next key.
-            	if(bug.getAttribute(Issue.ASSIGNED_TO).toString().contains(key))
-            		totalDelayHeroes+=bug.getDuration();
-              else
-              	totalDelayNonHeroes+=bug.getDuration();
+    	         Developer key = keyIter.next();  // Get the next key.
+            	if(bug.getAttribute(Issue.ASSIGNED_TO).toString().contains(key.getName()))
+            		bug.setFixedByHero();
             }
 				
             bugs[i] = bug;
