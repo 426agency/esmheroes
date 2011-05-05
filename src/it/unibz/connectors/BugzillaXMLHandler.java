@@ -257,10 +257,7 @@ public final class BugzillaXMLHandler extends HandlerBase {
     private void checkDTDVersion(AttributeList atts) throws SAXException {
         String dtdVersion = atts.getValue(DTD_VERSION_NAME);
         if ( (dtdVersion == null) || (!dtdVersion.equals(DTD_VERSION))) {
-            //throw new SAXException("Wrong DTD version " + dtdVersion 
-              //                     + "; expected " + DTD_VERSION);
-            //System.out.println("Warning: Wrong DTD version: " + dtdVersion 
-              //                  + "; expected " + DTD_VERSION);
+            
         }
     }
     
@@ -268,10 +265,10 @@ public final class BugzillaXMLHandler extends HandlerBase {
      */
     public static java.util.Date toDate (String date) {
         if (dateFormat == null) {
-            dateFormat = new SimpleDateFormat ("yyyy-mm-dd hh:mm:ss");
+            dateFormat = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
         }
         if (dateFormat2 == null) {
-            dateFormat2 = new SimpleDateFormat ("yyyy-mm-dd hh:mm");
+            dateFormat2 = new SimpleDateFormat ("yyyy-MM-dd hh:mm");
         }
         try {
             return dateFormat.parse (date);

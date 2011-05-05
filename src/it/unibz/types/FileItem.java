@@ -1,5 +1,10 @@
 package it.unibz.types;
 
+/**
+ * Class represents a fileitem, containing information about the original author
+ * and the number of times it has been modified by other users.
+ *
+ */
 public class FileItem
 {
 private String filename=null;

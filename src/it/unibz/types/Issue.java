@@ -26,9 +26,6 @@ public final class Issue extends Object implements Comparable {
     static final String OP_SYS = "op_sys"; 
     static final String PRIORITY = "priority";
     public static final String ASSIGNED_TO = "assigned_to";
-//    static final String CC = "cc";
-//    static final String DEPENDS_ON = "dependson";
-//    static final String BLOCKS = "blocks";
     public static final String CREATED = "creation_ts";
     static final String LAST_MODIFIED = "delta_ts";
 //    static final String VOTES = "votes";
@@ -79,12 +76,7 @@ public final class Issue extends Object implements Comparable {
      * @return array of names or empty array if nobody is
      */
     public String[] getObservedBy () {
-//        java.util.List l = (java.util.List)getAttribute (CC);
-//        if (l != null) {
-//            return (String[])l.toArray (new String[0]);
-//        } else {
             return new String[0];
-//        }
     }
 
     /** Status of the bug, verified, etc.
@@ -154,90 +146,6 @@ public final class Issue extends Object implements Comparable {
 
         return (Description[])((List)obj).toArray (new Description[0]);
     }
-    
-    /** A list of bugs that depends on this one.
-     * @return array of integer numbers of those bugs or empty array
-     */
-//    public int[] getDependsOn () {
-//        return ints (DEPENDS_ON);
-//    }
-    
-    /** A list of bugs that this issue blocks.
-     * @return array of integer numbers of those bugs or empty array
-     */
-//    public int[] getBlocks () {
-//        return ints (BLOCKS);
-//    }
-    
-    /** Name of the milestone this issue should be resolved in.
-     * @return string name
-     */
-    public String getTargetMilestone () {
-        return string (TARGET_MILESTONE);
-    }
-    
-    /** Name of the component this issue belongs to.
-     * @return string name
-     */
-    public String getComponent () {
-        return string (COMPONENT);
-    }
-    
-    /** Name of subcomponent this issue belongs to.
-     * @return string name
-     */
-    public String getSubcomponent () {
-        return string (SUBCOMPONENT);
-    }
-    
-    /** Number of votes for given component.
-     * @return integer representing number of votes or 0 is no votes present
-     */
-//    public int getVotes () {
-//        try {
-//            String s = string (VOTES);
-//            return Integer.parseInt (s);
-//        } catch (Exception ex) {
-//            return 0;
-//        }
-//    }
-
-    /** All keywords of the issue.
-     * @return Keywords deliminated by comma or empty string
-     */
-//    public String getKeywords () {
-//        try {
-//            return string (KEYWORDS);
-//        } catch (Exception ex) {
-//            return "";
-//        }
-//    }
-    
-    /** Check if the this issue has the specified keyword
-     * @return true if specified keyword is set in this issue,
-     *  otherwise false.
-     */
-//    public boolean containsKeyword (String keyword) {
-//        StringTokenizer tokenizer = new StringTokenizer(getKeywords());
-//        while (tokenizer.hasMoreTokens()) {
-//            String current = tokenizer.nextToken();
-//            if (current.equals(keyword))
-//                return true;
-//        }
-//        return false;
-//    }
-    
-    /** Is this bug actually an enhancement?
-     * @return true if this is enhancement, false otherwise
-     *
-    public boolean isEnhancement() {
-        if (attributes == null) {
-            return false;
-        }
-        String s = (String) getAttribute(ISSUE_TYPE); 
-        return (s == null) ? false : s.equals(ENHANCEMENT);
-    }
-     */
 
     /** Getter to return string for given attribute.
      */
@@ -439,10 +347,7 @@ public final class Issue extends Object implements Comparable {
 
 
 
-	public long getDuration() {
-		
-		    		
-    	
+	public long getDuration() {    	
 		return getLastModified().getTime()-getCreated().getTime();
 	}
 

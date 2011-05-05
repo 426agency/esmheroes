@@ -25,7 +25,6 @@ import java.util.Set;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
-import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -37,15 +36,20 @@ import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 
-
+/**
+ * Class which Handles everything needed for the SVN connection
+ *
+ */
 public class SvnHandler {
 	static Map<String,Developer> authors = new HashMap<String, Developer>();
 	static Map<String,FileItem> fileitems = new HashMap<String,FileItem>();
 	
+	/**
+	 * Returns the list of Developers which have HERO attributes.
+	 * @return
+	 */
     public static List<Developer> getHeros () {
-        /*
-         * default values:
-         */
+
         String url = "svn://anonsvn.kde.org/home/kde/trunk/KDE/kdeadmin/kuser";
         String name = "anonymous";
         String password = "anonymous";
@@ -56,9 +60,6 @@ public class SvnHandler {
         try {
             repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
         } catch (SVNException svne) {
-            /*
-             * Perhaps a malformed URL is the cause of this exception
-             */
             System.err
                     .println("error while creating an SVNRepository for location '"
                             + url + "': " + svne.getMessage());
@@ -68,73 +69,15 @@ public class SvnHandler {
         ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(name, password);
         repository.setAuthenticationManager(authManager);
 
-        
-        
-        long startRevision = 0;
-        long endRevision = -1; //HEAD (the latest) revision     
-//        try {
-//			logEntries = repository.log( new String[] { "" } , null , startRevision , endRevision , true , true );
-//		} catch (SVNException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
 		try {
 			listEntries(repository, "");
 		} catch (SVNException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-//		for ( Iterator entries = logEntries.iterator( ); entries.hasNext( ); ) {
-//			   SVNLogEntry logEntry = ( SVNLogEntry ) entries.next( );
-//			   Set changedPathsSet = logEntry.getChangedPaths( ).keySet( );
-//			   for ( Iterator changedPaths = changedPathsSet.iterator( ); changedPaths.hasNext( ); ) {
-//			      SVNLogEntryPath entryPath = ( SVNLogEntryPath ) logEntry.getChangedPaths( ).get( changedPaths.next( ) );
-//			      if(logEntry.getAuthor().length()==0)
-//			    	  continue;
-//			      
-//			      //first check author
-//			      Developer d =null;
-//			      boolean isnew=true;
-//			      if(!authors.containsKey(logEntry.getAuthor()))
-//		      		{
-//		      			d = new Developer(logEntry.getAuthor(), 1);
-//		      			authors.put(d.getName(),d);
-//		      		}
-//			      else{
-//			      d=authors.get(logEntry.getAuthor());
-//			      isnew=false;}
-//			      
-//			      //case 1 file already exists			      
-//			      if(fileitems.containsKey(entryPath.getPath())){
-//			      	FileItem cu = fileitems.get(entryPath.getPath());
-//			      	
-//			      	//If author not same as fileauthor remove hero status
-//			      	if(!logEntry.getAuthor().equalsIgnoreCase(cu.getAuthor().getName()))
-//			      		{cu.incNumbermodified();
-//			      		//increase number of authors modified files
-//			      		if(!isnew){
-//			      			d.incNrfile();
-//			      		}
-//			      			}
-//			      }
-//			      //case 2 we have a new file
-//			      else{
-//			      		FileItem cu = new FileItem(entryPath.getPath(), d);
-//			      		if(!isnew){
-//			      			d.incNrfile();
-//			      		}
-//			      		fileitems.put(entryPath.getPath( ),cu);
-//			      }
-//			      
-//			      authors.put(logEntry.getAuthor(), d);
-//    
-//		}
-//		}
 		List<Developer> ret= new ArrayList<Developer>();
 		//Now print only heroes
-		Set<String> keys = authors.keySet();         // The set of keys in the map.
+		Set<String> keys = authors.keySet();        
 	      Iterator<String> keyIter = keys.iterator();
 	      System.out.println("The map contains the following associations:");
 	      while (keyIter.hasNext()) {
@@ -149,13 +92,12 @@ public class SvnHandler {
 	        	 }
 	         }
 	      }
-	      //Now filter out authors
 	    
-	      
 	      return ret;
 		}
 
-    public static void listEntries( SVNRepository repository, String path ) throws SVNException {
+    
+    private static void listEntries( SVNRepository repository, String path ) throws SVNException {
         Collection fileentries = repository.getDir( path, -1 , null , (Collection) null );
         Iterator iterator = fileentries.iterator( );
         while ( iterator.hasNext( ) ) {
@@ -172,9 +114,6 @@ public class SvnHandler {
     		for ( Iterator entries = logEntries.iterator( ); entries.hasNext( ); ) {
 
     		SVNLogEntry logEntry = ( SVNLogEntry ) entries.next( );
-//			   Set changedPathsSet = logEntry.getChangedPaths( ).keySet( );
-//			   for ( Iterator changedPaths = changedPathsSet.iterator( ); changedPaths.hasNext( ); ) {
-//			      SVNLogEntryPath entryPath = ( SVNLogEntryPath ) logEntry.getChangedPaths( ).get( changedPaths.next( ) );
 			      if(logEntry.getAuthor().length()==0)
 			    	  continue;
 			      

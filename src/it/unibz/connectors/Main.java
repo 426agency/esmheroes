@@ -3,25 +3,11 @@ package it.unibz.connectors;
 import it.unibz.types.Developer;
 import it.unibz.types.Issue;
 import it.unibz.util.CSVExporter;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.xml.sax.SAXException;
 
 public class Main
 {
-
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//BugzillaComponent iz = new BugzillaComponent (new URL ("https://bugs.kde.org/"));
     
     int[] res;
 		try {
@@ -36,15 +22,6 @@ public class Main
 		}
     
    
-//		String res= String.format("%d hours, %d min, %d sec", 
-//				TimeUnit.MILLISECONDS.toHours(delay),
-//				TimeUnit.MILLISECONDS.toMinutes(delay)-
-//				TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(delay)),
-//				TimeUnit.MILLISECONDS.toSeconds(delay) - 
-//				TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(delay))
-//		);
-
-    //System.out.println("Total time heroes: "+BugzillaComponent.getTotalDelayHeroes()+" non Heroes: "+BugzillaComponent.getTotalDelayNonHeroes());
-	}
+}
 
 }

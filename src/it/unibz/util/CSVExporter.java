@@ -14,11 +14,15 @@ public class CSVExporter {
 		    FileWriter writer = new FileWriter(sFileName);
 		    writer.append("Bug");
 		    writer.append(',');
+		    writer.append("Developer");
+		    writer.append(',');
 		    writer.append("Fixtime");
 		    writer.append(',');
 		    writer.append("ByHero");
 		    writer.append('\n');
 		    for(int i=0;i<bugs.length;i++){
+		    	writer.append(String.valueOf(bugs[i].getId()));
+			    writer.append(',');
 		    	writer.append(bugs[i].getAssignedTo());
 			    writer.append(',');
 			    writer.append(String.valueOf(bugs[i].getDuration()));

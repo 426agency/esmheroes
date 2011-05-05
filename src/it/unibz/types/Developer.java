@@ -3,6 +3,10 @@ package it.unibz.types;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class represents a Developer with its affected files 
+ *
+ */
 public class Developer {
 
 	private String name=null;

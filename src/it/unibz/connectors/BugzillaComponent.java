@@ -16,16 +16,12 @@ import org.xml.sax.InputSource;
 /**
  * A connection to Bugzilla. Connects to the database and provides
  * descriptions of bugs. 
- *
  */
 public final class BugzillaComponent extends java.lang.Object {
 
     private static java.net.URL urlBase;
     /** sax parser to use */
     private static SAXParser saxParser;
-    private static long totalDelayNonHeroes=0;
-    private static long totalDelayHeroes=0;
-    private static int maxIOFailures = 15;
         
     
     /** Getter of more issues at once.
@@ -48,19 +44,17 @@ public final class BugzillaComponent extends java.lang.Object {
         
         Issue[] result = new Issue[numbers.length];
         
-        GLOBAL: for (int issueToProcess = 0; issueToProcess < numbers.length; ) {
+        for (int issueToProcess = 0; issueToProcess < numbers.length; ) {
             int lastIssueRightNow = Math.min (numbers.length, issueToProcess + maxIssuesAtOnce);
         
             StringBuffer sb = new StringBuffer (numbers.length * 8);
             String sep = "xml.cgi?id=";
-            IOException lastEx = null;
             for (int i = issueToProcess; i < lastIssueRightNow; i++) {
                 sb.append (sep);
                 sb.append (numbers[i]);
                 sep = ",";
             }
             sb.append ("&show_attachments=false");
-            for (int iterate = 0; iterate < maxIOFailures; iterate++) {
                 URL u = null;
                 try {
                     u = new URL("https://bugs.kde.org/"+sb.toString());
@@ -77,16 +71,12 @@ public final class BugzillaComponent extends java.lang.Object {
                     for (int i = 0; i < arr.length; ) {
                         result[issueToProcess++] = arr[i++];
                     }
-                    
-
-                    continue GLOBAL;
+                    continue;
                 }
                 catch (IOException ex) {
                     
                 }
-            }
-        
-            throw lastEx;
+            
         } // end of GLOBAL
         
         return result;
@@ -98,10 +88,8 @@ public final class BugzillaComponent extends java.lang.Object {
      */
     public static int[] query (String query) throws SAXException, IOException {
         URL u = new URL ("https://bugs.kde.org/buglist.cgi?" + query);
-        IOException lastEx = null;
         BufferedReader reader = null;
 
-        for (int iterate = 0; iterate < maxIOFailures; iterate++) {
             try {
                 reader = new BufferedReader (
                     new InputStreamReader (u.openStream (), "UTF-8")
@@ -110,9 +98,9 @@ public final class BugzillaComponent extends java.lang.Object {
             catch (IOException ex) {
                 
             }
-        }
+        
         if (reader == null) {
-            throw new IOException("Can't get connection to " + u.toString() + " for " + maxIOFailures + "times.");
+            throw new IOException("Can't get connection to " + u.toString());
         }
         
         ArrayList result = new ArrayList ();
@@ -137,8 +125,6 @@ public final class BugzillaComponent extends java.lang.Object {
             }
         
             String number = line.substring (index, end);
-            
-
             
             result.add (Integer.valueOf (number));
         }
@@ -188,10 +174,10 @@ public final class BugzillaComponent extends java.lang.Object {
                 Map.Entry entry = (Map.Entry) it.next(); 
                 bug.setAttribute((String) entry.getKey(), entry.getValue());
             }
-            //Set here both time delays
             Iterator<Developer> keyIter = heros.iterator();
     	      while (keyIter.hasNext()) {
-    	         Developer key = keyIter.next();  // Get the next key.
+    	         Developer key = keyIter.next();
+    	         //SET IF bug fixed by hero
             	if(bug.getAttribute(Issue.ASSIGNED_TO).toString().contains(key.getName()))
             		bug.setFixedByHero();
             }
@@ -200,13 +186,5 @@ public final class BugzillaComponent extends java.lang.Object {
         }
         return bugs;
     }
-
-		public static long getTotalDelayNonHeroes() {
-			return totalDelayNonHeroes;
-		}
-
-		public static long getTotalDelayHeroes() {
-			return totalDelayHeroes;
-		}
     
 }
