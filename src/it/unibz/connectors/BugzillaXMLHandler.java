@@ -30,14 +30,7 @@ public final class BugzillaXMLHandler extends HandlerBase {
     private static final String BUG = "bug";
     
     private static final String BUGZILLA = "bugzilla";
-    
-    private static final String LONG_DESC = "long_desc";
-    
-    private static final String WHO = "who";
-    
-    private static final String BUG_WHEN = "bug_when";
-    
-    private static final String THETEXT = "thetext";
+   
     
     /** 
      * Contains names of all the XML tags which can be inside the
@@ -45,9 +38,7 @@ public final class BugzillaXMLHandler extends HandlerBase {
      * A constant for now. 
      */
     private static final HashSet tagsInIssue;
-    
-    private static final List tagsInLongDesc;
-    
+        
     /** 
      * List of bugs created from the XML file. Items of the list are Maps
      * containing the name/value pairs for the bug attributes.
@@ -62,15 +53,7 @@ public final class BugzillaXMLHandler extends HandlerBase {
     
     /** A StringBuffer containing the values inside the tags */
     private StringBuffer buffer;
-    
-    /** A StringBuffer containing the value for the long_desc attribute */
-    private StringBuffer longDescBuffer;
-    
-    /** Contains the Issue.LongDescription object list */
-    private List longDescriptionList;
-    
-    private Issue.Description longDesc;
-
+        
     /** date format converter */
     private static SimpleDateFormat dateFormat;
     /** date format converter for second format of time */
@@ -81,31 +64,11 @@ public final class BugzillaXMLHandler extends HandlerBase {
         tagsInIssue = new HashSet();
         tagsInIssue.add("bug_id");
         tagsInIssue.add("bug_status");
-        tagsInIssue.add("product");
         tagsInIssue.add("priority");
-        tagsInIssue.add("version");
-        tagsInIssue.add("rep_platform");
         tagsInIssue.add(Issue.ASSIGNED_TO);
         tagsInIssue.add("delta_ts");
-        tagsInIssue.add("component");
-        tagsInIssue.add("reporter");
-        tagsInIssue.add("target_milestone");
-        tagsInIssue.add("bug_severity");
         tagsInIssue.add("creation_ts");
-        tagsInIssue.add("op_sys");
-        tagsInIssue.add("resolution");
-        tagsInIssue.add("short_desc");
-//        tagsInIssue.add(Issue.BLOCKS);
-//        tagsInIssue.add(Issue.CC);
-//        tagsInIssue.add(Issue.DEPENDS_ON);
-//        tagsInIssue.add(Issue.VOTES);
-//        tagsInIssue.add(Issue.KEYWORDS);
-//        tagsInIssue.add("long_desc");
-        
-        tagsInLongDesc = new ArrayList();
-        tagsInLongDesc.add(Issue.Description.WHO);
-        tagsInLongDesc.add(BUG_WHEN);
-        tagsInLongDesc.add(Issue.Description.THETEXT);
+       
     }
     
     /** Creates new IssuezillaXMLHandler */
@@ -136,22 +99,10 @@ public final class BugzillaXMLHandler extends HandlerBase {
         } else if (name.equals(BUG)) {
             bug = new HashMap();
             bugs.add(bug);
-            longDescriptionList = new ArrayList();
-            bug.put(Issue.LONG_DESC_LIST, longDescriptionList);
-            // also CC is multivalue
-//            bug.put(Issue.CC, new ArrayList ());
-//            bug.put(Issue.DEPENDS_ON, new ArrayList ());
-//            bug.put(Issue.BLOCKS, new ArrayList ());
             bug.put(Issue.CREATED, new java.util.Date (0));
-            //longDescBuffer = new StringBuffer();
             dealIssueAttributes(atts);
         } else if (tagsInIssue.contains(name)) {
             buffer = new StringBuffer();
-        } else if (tagsInLongDesc.contains(name)) { 
-            longDescBuffer = new StringBuffer();
-        } else if (name.equals(LONG_DESC)) {
-            longDesc = new Issue.Description();
-            longDescriptionList.add(longDesc);
         }
     }
 
@@ -178,16 +129,7 @@ public final class BugzillaXMLHandler extends HandlerBase {
                 bug.put(name, buffer.toString());
             }
             buffer = null;
-        } else if (name.equalsIgnoreCase(LONG_DESC)) { 
-            //longDescriptionList.add(longDesc);
-        } else if (tagsInLongDesc.contains(name)) {
-            String s = longDescBuffer.toString ();
-            if (name.equals (BUG_WHEN)) {
-                longDesc.setIssueWhen (toDate (s));
-            } else {
-                longDesc.setAtribute(name, s);
-            }
-        } 
+        }
         
     }
 
@@ -196,9 +138,7 @@ public final class BugzillaXMLHandler extends HandlerBase {
     throws org.xml.sax.SAXException {
         String s = new String(ch, start, length);
         if (!s.equals("")) {
-            if (tagsInLongDesc.contains(currentTag())) {
-                longDescBuffer.append(s);
-            } else if (buffer != null) {
+            if (buffer != null) {
                 buffer.append(s);
             }
         }

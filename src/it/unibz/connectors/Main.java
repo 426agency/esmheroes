@@ -17,7 +17,6 @@ public class Main
 			Issue[] bugs = BugzillaComponent.getBugs(res,heros);
 			CSVExporter.generateCsvFile("C:\\Users\\Fbihack\\Documents\\University\\data.csv",bugs);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     

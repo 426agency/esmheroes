@@ -77,7 +77,7 @@ public final class BugzillaComponent extends java.lang.Object {
                     
                 }
             
-        } // end of GLOBAL
+        }
         
         return result;
     }
@@ -87,7 +87,7 @@ public final class BugzillaComponent extends java.lang.Object {
      * @return array of integers
      */
     public static int[] query (String query) throws SAXException, IOException {
-        URL u = new URL ("https://bugs.kde.org/buglist.cgi?" + query);
+        URL u = new URL (query);
         BufferedReader reader = null;
 
             try {
