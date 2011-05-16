@@ -1,0 +1,10 @@
+Dataset <- read.table("C:\\Users\\Fbihack\\Documents\\University\\data.csv", header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+attach(Dataset)
+t.test(Fixtime~ByHero)
+boxplot(Fixtime~ByHero)
+sort1.Dataset <- Dataset[order(Bug),]
+detach(Dataset)
+attach(sort1.Dataset)
+plot(Bug,Fixtime)
+lines(Bug[ByHero==1],Fixtime[ByHero==1],col="red")
+lines(Bug[ByHero==0],Fixtime[ByHero==0],col="blue")
