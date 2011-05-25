@@ -80,23 +80,32 @@ public class SvnHandler {
 		Set<String> keys = authors.keySet();        
 	      Iterator<String> keyIter = keys.iterator();
 	      System.out.println("The map contains the following associations:");
+	      boolean canbeflagged=false;
 	      while (keyIter.hasNext()) {
 	         Object key = keyIter.next();  // Get the next key.
 	         Developer value = authors.get(key);  // Get the value for that key.
 	         System.out.println( "   (" + key + "," + value.getNrfile() + ")" );
+	         canbeflagged=false;
 	         for(int i=0;i<value.getNrfile();i++){
 	        	 if(value.getFile(i).getNumbermodified()==1){
-	        		 System.out.println("HERO!!");
-	        		 ret.add(value);
-	        		 break;
+	        		 canbeflagged=true;
 	        	 }
+	         }
+	         if(canbeflagged&&((value.getNrfile()*100)/fileitems.size())>=10){
+	        	 System.out.println("HERO!");
+	        	 ret.add(value);
 	         }
 	      }
 	    
 	      return ret;
 		}
 
-    
+    /**
+     * A hero exclusively edits/commits a number of files >alpha%
+     * @param repository
+     * @param path
+     * @throws SVNException
+     */
     private static void listEntries( SVNRepository repository, String path ) throws SVNException {
         Collection fileentries = repository.getDir( path, -1 , null , (Collection) null );
         Iterator iterator = fileentries.iterator( );

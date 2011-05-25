@@ -95,8 +95,8 @@ public final class BugzillaComponent extends java.lang.Object {
                     new InputStreamReader (u.openStream (), "UTF-8")
                 );
             }
-            catch (IOException ex) {
-                
+            catch (Exception ex) {
+                ex.printStackTrace();
             }
         
         if (reader == null) {
