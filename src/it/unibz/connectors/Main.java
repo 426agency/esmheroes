@@ -45,7 +45,7 @@ public class Main
 			List<Developer> heros = SvnHandler.getHeros();
 			
 			Issue[] bugs = BugzillaComponent.getBugs(res,heros);
-			CSVExporter.generateCsvFile("C:\\Users\\Fbihack\\Documents\\University\\data.csv",bugs);
+			CSVExporter.generateCsvFile("C:\\Users\\Fbihack\\Documents\\University\\esmheroes\\data.csv",bugs);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

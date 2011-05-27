@@ -1,10 +1,21 @@
-Dataset <- read.table("C:\\Users\\Fbihack\\Documents\\University\\data.csv", header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+Dataset <- read.table("C:\\Users\\Fbihack\\Documents\\University\\esmheroes\\data.csv", header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 attach(Dataset)
-t.test(Fixtime~ByHero)
+wilcox.test(Fixtime[Bug<100000]~ByHero[Bug<100000])
 boxplot(Fixtime~ByHero)
+windows()
 sort1.Dataset <- Dataset[order(Bug),]
 detach(Dataset)
 attach(sort1.Dataset)
 plot(Bug,Fixtime)
 lines(Bug[ByHero==1],Fixtime[ByHero==1],col="red")
 lines(Bug[ByHero==0],Fixtime[ByHero==0],col="blue")
+#Compare where both fixing
+#Get max non hero bug
+windows()
+maxb=max(Bug[ByHero==0])
+wilcox.test(Fixtime[Bug<=maxb]~ByHero[Bug<=maxb])
+boxplot(Fixtime[Bug<=maxb]~ByHero[Bug<=maxb])
+windows()
+plot(Bug[Bug<=maxb],Fixtime[Bug<=maxb])
+lines(Bug[ByHero==1&Bug<=maxb],Fixtime[ByHero==1&Bug<=maxb],col="red")
+lines(Bug[ByHero==0&Bug<=maxb],Fixtime[ByHero==0&Bug<=maxb],col="blue")
