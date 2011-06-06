@@ -7,7 +7,7 @@ import it.unibz.connectors.BugzillaXMLHandler;
 import java.util.*;
 
 
-/** Represents on issue in issuezilla.
+/** Represents on issue in Bugzilla.
  */
 public final class Issue implements Comparable {
     static final String ISSUE_ID = "bug_id";
